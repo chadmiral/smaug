@@ -1,0 +1,34 @@
+
+<html>
+
+<head>
+<title>Capitol Hill</title>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+<script src="jquery-3.1.1.js"></script>
+
+<script type="text/javascript">
+
+    $( document ).ready(function() {
+      var jqxhr = $.getJSON( "../data/senate.json", function()
+      {
+        console.log( "success" );
+        document.write("asfsdfs");
+      })
+    });
+
+    function start()
+    {
+
+    }
+</script>
+
+</head>
+
+
+<body onload="start();">
+    <canvas id="caphill-canvas" style="border: none;" width="500" height="500"></canvas>
+    <br/>
+</body>
+
+</html>
