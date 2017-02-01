@@ -10,10 +10,20 @@
 <script type="text/javascript">
 
     $( document ).ready(function() {
-      var jqxhr = $.getJSON( "../data/senate.json", function()
+      var senate = $.getJSON( "../data/senate.json", function(json)
       {
-        console.log( "success" );
-        document.write("asfsdfs");
+        num_results = json.results[0].num_results;
+        console.log(json.results[0]);
+        console.log(num_results);
+
+        var member;
+        for(member = 0; member < num_results; member++)
+        {
+          var first_name = json.results[0].members[member].first_name;
+          var last_name = json.results[0].members[member].last_name;
+          var url = json.results[0].members[member].url;
+          document.write("<a href=\"" + url + "\">" + last_name + ", " + first_name + "</a><br>");
+        }
       })
     });
 
