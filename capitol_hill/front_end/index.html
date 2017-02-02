@@ -9,27 +9,157 @@
 
 <script type="text/javascript">
 
-    $( document ).ready(function() {
-      var senate = $.getJSON( "../data/senate.json", function(json)
+    var current_congress = 115;
+    var data_path = "../data/" + current_congress + "/";
+
+    $( document ).ready(function()
+    {
+
+    });
+
+    function start()
+    {
+      //force synchronous
+      $.ajaxSetup( { "async": false } );
+
+      //read in senate data
+      var senate = $.getJSON(data_path + "senate.json", function(json)
       {
         num_results = json.results[0].num_results;
         console.log(json.results[0]);
         console.log(num_results);
 
         var member;
+        document.write("<ol>");
         for(member = 0; member < num_results; member++)
         {
           var first_name = json.results[0].members[member].first_name;
           var last_name = json.results[0].members[member].last_name;
           var url = json.results[0].members[member].url;
-          document.write("<a href=\"" + url + "\">" + last_name + ", " + first_name + "</a><br>");
+          document.write("<li><a href=\"" + url + "\">" + last_name + ", " + first_name + "</a><br>");
         }
+        document.write("</ol>");
       })
-    });
 
-    function start()
+      document.write("<p><p>");
+
+      //read in Senate Bills data
+      var bills = $.getJSON(data_path + "senate/" + "bills_new.json", function(json)
+      {
+        var num_results = json.results[0].num_results;
+
+        document.write("<ol>");
+        var bill;
+        for(bill = 0; bill < num_results; bill++)
+        {
+          var bill_number = json.results[0].bills[bill].number;
+          var bill_title = json.results[0].bills[bill].title;
+          document.write("<li><strong>" + bill_number + ":</strong> " + bill_title);
+        }
+        document.write("</ol>")
+      })
+
+      //read in House data
+      var house = $.getJSON(data_path + "house.json", function(json)
+      {
+        var num_results = json.results[0].num_results;
+        var member;
+        document.write("<ol>");
+        for(member = 0; member < num_results; member++)
+        {
+          var first_name = json.results[0].members[member].first_name;
+          var last_name = json.results[0].members[member].last_name;
+          var url = json.results[0].members[member].url;
+          document.write("<li><a href=\"" + url + "\">" + last_name + ", " + first_name + "</a><br>");
+        }
+        document.write("</ol>");
+      })
+
+      //read in House Bills data
+      var bills = $.getJSON(data_path + "house/bills_new.json", function(json)
+      {
+        var num_results = json.results[0].num_results;
+
+        document.write("<ol>");
+        var bill;
+        for(bill = 0; bill < num_results; bill++)
+        {
+          var bill_number = json.results[0].bills[bill].number;
+          var bill_title = json.results[0].bills[bill].title;
+          document.write("<li><strong>" + bill_number + ":</strong> " + bill_title);
+
+          var bill_path = data_path + "/house/bills/" + bill_number
+          var bill_sponsor_path = bill_path + "_sponsors.json"
+          bill_path += ".json"
+          bill_json = $.getJSON(bill_sponsor_path, function(json)
+          {
+            document.write("<ul>");
+            document.write("<li><strong>" + json.results[0].sponsor + "</strong>")
+            var i;
+            for(i = 0; i < json.results[0].number_of_cosponsors; i++)
+            {
+              document.write("<li>" + json.results[0].cosponsors[i].name);
+            }
+            document.write("</ul>");
+          })
+
+        }
+        document.write("</ol>")
+      })
+    }
+
+    function load_house_members()
     {
+      console.log("afwefawefwef");
+      //read in House data
+      var house = $.getJSON(data_path + "house.json", function(json)
+      {
+        var num_results = json.results[0].num_results;
+        var member;
+        document.write("<ol>");
+        for(member = 0; member < num_results; member++)
+        {
+          var first_name = json.results[0].members[member].first_name;
+          var last_name = json.results[0].members[member].last_name;
+          var url = json.results[0].members[member].url;
+          document.write("<li><a href=\"" + url + "\">" + last_name + ", " + first_name + "</a><br>");
+        }
+        document.write("</ol>");
+      })
+    }
 
+    var gl;
+
+    function gl_init(canvas) {
+      try
+      {
+        gl = canvas.getContext("experimental-webgl");
+        gl.viewportWidth = canvas.width;
+        gl.viewportHeight = canvas.height;
+      }
+      catch(e) {}
+      if(!gl)
+      {
+        alert("Could not initialise WebGL, sorry :-(");
+      }
+    }
+
+    function gl_render()
+    {
+      gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    }
+
+    function gl_start()
+    {
+      var canvas = document.getElementById("caphill-canvas");
+      gl_init(canvas);
+      //initShaders();
+      //initBuffers();
+      setInterval(gl_render, 15);
+
+      gl.clearColor(0.0, 1.0, 0.5, 1.0);
+      gl.enable(gl.DEPTH_TEST);
     }
 </script>
 
@@ -38,6 +168,11 @@
 
 <body onload="start();">
     <canvas id="caphill-canvas" style="border: none;" width="500" height="500"></canvas>
+
+    <div style="height:100px;overflow:auto;" onblur="load_house_members();">
+
+    </div>
+
     <br/>
 </body>
 

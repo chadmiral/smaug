@@ -29,8 +29,6 @@
 
 <script type="text/javascript">
 
-    var bills[];
-
     var gl;
     function initGL(canvas) {
         try {
@@ -103,7 +101,6 @@
         shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
         shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
     }
-
 
     var mvMatrix = mat4.create();
     var pMatrix = mat4.create();
