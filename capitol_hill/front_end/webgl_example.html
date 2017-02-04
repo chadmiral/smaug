@@ -6,37 +6,36 @@
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 
 <script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
+<script type="x-shader/x-fragment" id="shader-fs">
+precision mediump float;
 
-<script id="shader-fs" type="x-shader/x-fragment">
-    precision mediump float;
-
-    void main(void) {
-        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-    }
+void main(void)
+{
+    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+}
 </script>
+<script type="x-shader/x-vertex" id="shader-vs">
+attribute vec3 aVertexPosition;
 
-<script id="shader-vs" type="x-shader/x-vertex">
-    attribute vec3 aVertexPosition;
+uniform mat4 uMVMatrix;
+uniform mat4 uPMatrix;
 
-    uniform mat4 uMVMatrix;
-    uniform mat4 uPMatrix;
-
-    void main(void) {
-        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
-    }
+void main(void)
+{
+    gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+}
 </script>
-
 
 <script type="text/javascript">
-
     var gl;
-    function initGL(canvas) {
-        try {
+    function initGL(canvas)
+    {
+        try
+        {
             gl = canvas.getContext("experimental-webgl");
             gl.viewportWidth = canvas.width;
             gl.viewportHeight = canvas.height;
-        } catch (e) {
-        }
+        } catch (e) {}
         if (!gl) {
             alert("Could not initialise WebGL, sorry :-(");
         }
@@ -80,7 +79,8 @@
 
     var shaderProgram;
 
-    function initShaders() {
+    function initShaders()
+    {
         var fragmentShader = getShader(gl, "shader-fs");
         var vertexShader = getShader(gl, "shader-vs");
 
@@ -167,7 +167,8 @@
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer.numItems);
     }
 
-    function webGLStart() {
+    function webGLStart()
+    {
         var canvas = document.getElementById("caphill-canvas");
         initGL(canvas);
         initShaders();

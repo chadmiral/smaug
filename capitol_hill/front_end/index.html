@@ -108,9 +108,22 @@
       })
     }
 
+    class CongressPerson
+    {
+      doc_write()
+      {
+        document.write("<li>");
+        document.write("<a href=\"" + this.url + "\">");
+        document.write(this.last_name + ", " + this.first_name);
+        document.write("</a> (" + this.party + ", " + this.state + ")");
+        document.write(" <a href=\"http://www.facebook.com/" + this.facebook + "\">fb</a>");
+        document.write(" <a href=\"http://www.twitter.com/" + this.twitter + "\">tw</a>")
+      }
+    }
+
+    //var House_members = new CongressPerson[];
     function load_house_members()
     {
-      console.log("afwefawefwef");
       //read in House data
       var house = $.getJSON(data_path + "house.json", function(json)
       {
@@ -119,11 +132,27 @@
         document.write("<ol>");
         for(member = 0; member < num_results; member++)
         {
-          var first_name = json.results[0].members[member].first_name;
-          var last_name = json.results[0].members[member].last_name;
-          var url = json.results[0].members[member].url;
-          document.write("<li><a href=\"" + url + "\">" + last_name + ", " + first_name + "</a><br>");
+          var congress_person = new CongressPerson;
+
+          congress_person.first_name = json.results[0].members[member].first_name;
+          congress_person.last_name = json.results[0].members[member].last_name;
+          congress_person.url = json.results[0].members[member].url;
+          congress_person.party = json.results[0].members[member].party;
+          congress_person.state = json.results[0].members[member].state;
+          congress_person.facebook = json.results[0].members[member].facebook_id;
+          congress_person.twitter = json.results[0].members[member].twitter_account;
+
+          //House_members.push(congress_person); //TODO: figure out how this shit works
+
+          congress_person.doc_write();
         }
+
+        var m;
+        for(m in House_members)
+        {
+          m.doc_write();
+        }
+
         document.write("</ol>");
       })
     }
@@ -166,7 +195,7 @@
 </head>
 
 
-<body onload="start();">
+<body onload="load_house_members();">
     <canvas id="caphill-canvas" style="border: none;" width="500" height="500"></canvas>
 
     <div style="height:100px;overflow:auto;" onblur="load_house_members();">
